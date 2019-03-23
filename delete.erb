@@ -1,0 +1,44 @@
+<% require 'rubygems' %>
+<% require 'dbi' %>
+
+<% dbh = DBI.connect( 'DBI:SQLite3:bookinfo_sqlite.db' ) %>
+<% row = dbh.select_one("select * from bookinfos where id=\'#{target_id}\'") %>
+
+<html lang="ja">
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="default.css">
+    <title>蔵書管理</title>
+  </head>
+  <body>
+    <h1>蔵書管理</h1>
+    <h2>蔵書データの削除</h2>
+    <p>このデータを削除します</p>
+    <a href="index.html">メニュー画面に戻る</a>
+    <a href="list.erb">蔵書データの表示</a>
+    <hr>
+
+    <form action="delete" method="post"> <%#deleteの処理をサーバーに依頼する%>
+    <input type="hidden" name="id" value="<%= target_id %>" />
+    <table>
+    <th>項目名</th><th>削除データ</th>
+<% row.each_with_name do |val, name| %>
+<tr>
+  <td><%=name%></td><td><%= val.to_s%></td>
+  <input type="hidden" name="<%=name%>" value="<%=val.to_s%>" />
+</tr>
+<% end %>
+    </table>
+    <input type="submit"  value="削除を実行" />
+    </form>
+    <hr>
+    </body>
+    </html>
+
+    
+<%    # 非表示のデータを設定するのは何故だ？ %>
