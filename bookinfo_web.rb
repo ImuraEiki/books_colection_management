@@ -97,12 +97,12 @@ server.mount_proc("/delete") {|req, res|
 
     dbh = DBI.connect('DBI:SQLite3:bookinfo_sqlite.db')
 
-    dbh.do("delete * from bookinfos where id='#{req.query['id']}';") #deleteのactionで送信されてきたidの項目を削除
+    dbh.do("delete from bookinfos where id='#{req.query['id']}';") #deleteのactionで送信されてきたidの項目を削除
 
     dbh.disconnect
     
-    template = ERB.new(File.read('delete.erb'))
-    res.body << template.result(binding)
+    template = ERB.new(File.read('deleted.erb'))
+    res.body << template.result( binding )
 }
 
 trap(:INT) do 
