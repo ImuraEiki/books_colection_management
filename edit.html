@@ -1,0 +1,58 @@
+<% require 'rubygems' %>
+<% require 'dbi' %>
+
+<% dbh = DBI.connect( 'DBI:SQLite3:bookinfo_sqlite.db' ) %>
+<% sth = dbh.execute("select * from bookinfos where id=\'#{target_id}\'") %>
+
+<html lang="ja">
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="default.css">
+    <title>蔵書管理</title>
+  </head>
+  <body>
+    <h1>蔵書管理</h1>
+    <h2>蔵書データの修正</h2>
+    <p>このデータを修正します</p>
+    <a href="index.html">メニュー画面に戻る</a>
+    <a href="list.erb">蔵書データの表示</a>
+    <hr>
+<% else %>
+    <h2>検索結果の表示</h2>
+    <p>処理する蔵書データを選択してください</p>
+    <a href="index.html">メニュー画面に戻る</a>
+    <a href="list.erb">蔵書データの表示（検索の解除）</a>
+    <hr>
+
+    <form action="list" method="post">
+    <table>
+      <tr>
+        <th>削除</th><th>修正</th>
+<% ['id', 'title', 'author', 'page', 'publish_date'].each do |name| %>
+        <th><%= name %></th>
+<% end %>
+      </tr>
+<% dbh.select_all("select * from bookinfos #{where_data};") do |row| %>
+      <tr>
+<% ['id', 'title', 'author', 'page', 'publish_date'].each do |name| %>
+<% if name == 'id' then %>
+        <td><input type="radio" name="operation" value=<%="#{row[name]}.delete"%> /></td>
+        <td><input type="radio" name="operation" value=<%="#{row[name]}.edit"%> /></td>
+<% end %>
+        <td><%= row[name].to_s %></td>
+<% end %>
+      </tr>
+<% end %>
+    </table>
+    <input type="submit" value="選択した処理を実行" />
+<% end %>
+<hr>
+
+  </body>
+  </html>
+<% dbh.disconnect %>
