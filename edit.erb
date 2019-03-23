@@ -22,37 +22,22 @@
     <a href="index.html">メニュー画面に戻る</a>
     <a href="list.erb">蔵書データの表示</a>
     <hr>
-<% else %>
-    <h2>検索結果の表示</h2>
-    <p>処理する蔵書データを選択してください</p>
-    <a href="index.html">メニュー画面に戻る</a>
-    <a href="list.erb">蔵書データの表示（検索の解除）</a>
-    <hr>
 
-    <form action="list" method="post">
+    <form action="edit" method="post"> #修正の処理をサーバーに依頼する
+    <input type="hidden" name="id" value="<%= target_id %>" />
     <table>
-      <tr>
-        <th>削除</th><th>修正</th>
+<% sth.each do |row| %>
+        <th>項目名</th><th>修正データ</th>
 <% ['id', 'title', 'author', 'page', 'publish_date'].each do |name| %>
-        <th><%= name %></th>
+        <tr>
+            <td><%= name %></td>
+            <td><input name="<%=name%>" value="<%=row[name]%>" size="60" /></td>
+        </tr>
 <% end %>
-      </tr>
-<% dbh.select_all("select * from bookinfos #{where_data};") do |row| %>
-      <tr>
-<% ['id', 'title', 'author', 'page', 'publish_date'].each do |name| %>
-<% if name == 'id' then %>
-        <td><input type="radio" name="operation" value=<%="#{row[name]}.delete"%> /></td>
-        <td><input type="radio" name="operation" value=<%="#{row[name]}.edit"%> /></td>
-<% end %>
-        <td><%= row[name].to_s %></td>
-<% end %>
-      </tr>
 <% end %>
     </table>
-    <input type="submit" value="選択した処理を実行" />
-<% end %>
-<hr>
-
-  </body>
-  </html>
-<% dbh.disconnect %>
+    <input type="submit" value="修正を実行" />
+    </form>
+    <hr>
+    </body>
+    </html>
